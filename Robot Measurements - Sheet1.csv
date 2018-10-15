@@ -3,4 +3,4 @@ Joint,L(i) (cm),d(i)(cm),alpha(i),theta(i)
 2,9.15,0.98,90,theta2
 3,5.74,0,0,theta3
 4,0,3.58,90,theta4+90
-5,0,5.37,0,theta5
+5,0,5.37,0,theta5+10
