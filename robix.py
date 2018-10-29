@@ -1,6 +1,7 @@
 from frames import frames
 from frames.config import config, thetas
 import numpy as np
+import sys
 
 
 def generate_robix_command(theta1, theta2, theta3, theta4, theta5, theta6):
@@ -22,14 +23,27 @@ def convert_degrees_to_robix(name, degrees):
 
 def forward_kinematics():
     result = np.identity(4)
-    a_matrices = np.empty([0, 0])
+    a_matrices = np.zeros([5], dtype=object)
     for theta in thetas:
-        np.append(a_matrices, frames._compute_a_matrix(theta, thetas[theta]))
+        a_matrices[thetas.index(theta)] = frames._compute_a_matrix(theta[0], theta[1])
     for matrix in a_matrices:
+        import pdb; pdb.set_trace()
         result = np.matmul(result, matrix)
 
     return result
 
 
-if "__name__" == "__main__":
-    print(forward_kinematics())
+def apply_fwd_kin(x=0, y=0, z=0):
+    import pdb; pdb.set_trace()
+    return np.matmul(forward_kinematics(), np.array([[x],
+                                                     [y],
+                                                     [z],
+                                                     [1]]))
+
+
+if __name__ == "__main__":
+    if len(sys.argv) == 4:
+        x, y, z = int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3])
+        print(apply_fwd_kin(x, y, z))
+    else:
+        print(apply_fwd_kin())
