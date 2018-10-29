@@ -29,7 +29,7 @@ def forward_kinematics():
     for matrix in a_matrices:
         print(np.around(matrix, 2))
         result = np.matmul(result, matrix)
-
+    print(np.around(result,2))
     return result
 
 
