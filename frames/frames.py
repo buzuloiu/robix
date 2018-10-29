@@ -13,8 +13,8 @@ def _compute_a_matrix(name, degrees):
     l = config[name]['l']
     d = config[name]['d']
     alpha = np.deg2rad(config[name]['alpha'])
-    theta = np.deg2rad(degrees+config[name]['theta_offset'])
-    return np.array([[np.cos(theta), (-1*np.sin(theta)*np.cos(alpha)),  (np.sin(theta)*np.cos(alpha)),   l*np.cos(theta)],
+    theta = np.deg2rad((degrees*config[name]['theta_sign'])+config[name]['theta_offset'])
+    return np.array([[np.cos(theta), (-1*np.sin(theta)*np.cos(alpha)),  (np.sin(theta)*np.sin(alpha)),   l*np.cos(theta)],
                      [np.sin(theta),    np.cos(theta)*np.cos(alpha),   (-1*np.cos(theta)*np.sin(alpha)), l*np.sin(theta)],
                      [      0,                 np.sin(alpha),                 np.cos(alpha),                   d        ],
                      [      0,                       0,                            0,                          1        ]])

@@ -27,18 +27,17 @@ def forward_kinematics():
     for theta in thetas:
         a_matrices[thetas.index(theta)] = frames._compute_a_matrix(theta[0], theta[1])
     for matrix in a_matrices:
-        import pdb; pdb.set_trace()
+        print(np.around(matrix, 2))
         result = np.matmul(result, matrix)
 
     return result
 
 
 def apply_fwd_kin(x=0, y=0, z=0):
-    import pdb; pdb.set_trace()
-    return np.matmul(forward_kinematics(), np.array([[x],
+    return np.around(np.matmul(forward_kinematics(), np.array([[x],
                                                      [y],
                                                      [z],
-                                                     [1]]))
+                                                     [1]])),2)
 
 
 if __name__ == "__main__":
