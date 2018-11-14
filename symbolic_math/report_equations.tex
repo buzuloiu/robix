@@ -1,7 +1,19 @@
 \documentclass{article}
+\usepackage{mathtools}
+\usepackage{amsmath}
+    \usepackage{nccmath}
+\usepackage
+[%
+left=2cm,% left margin
+right=2cm,% right margin
+top=3cm, % top margin
+bottom=3cm,% bottom margin
+paperwidth=600cm% other options: a0paper, a1paper, a2paper, a3paper, a4paper, a5paper, a6paper, and many more.
+]{geometry}
+
+    \newenvironment{mpmatrix}{\begin{medsize}\begin{pmatrix}}%
+    {\end{pmatrix}\end{medsize}}%
 \begin{document}
 
-\[
-1 + \frac{\theta_{1}^{2}}{2} + \frac{5 \theta_{1}^{4}}{24} + \frac{61 \theta_{1}^{6}}{720} + \frac{277 \theta_{1}^{8}}{8064} + O\left(\theta_{1}^{10}\right)
-\]
+\left[\begin{matrix}- \sin{\left (\theta_{1} \right )} \sin{\left (\theta_{2} \right )} \cos{\left (\alpha_{1} \right )} + \cos{\left (\theta_{1} \right )} \cos{\left (\theta_{2} \right )} & \sin{\left (\alpha_{1} \right )} \sin{\left (\alpha_{2} \right )} \sin{\left (\theta_{1} \right )} - \sin{\left (\theta_{1} \right )} \cos{\left (\alpha_{1} \right )} \cos{\left (\alpha_{2} \right )} \cos{\left (\theta_{2} \right )} - \sin{\left (\theta_{2} \right )} \cos{\left (\alpha_{2} \right )} \cos{\left (\theta_{1} \right )} & \sin{\left (\alpha_{1} \right )} \sin{\left (\theta_{1} \right )} \cos{\left (\alpha_{2} \right )} + \sin{\left (\alpha_{2} \right )} \sin{\left (\theta_{1} \right )} \cos{\left (\alpha_{1} \right )} \cos{\left (\theta_{2} \right )} + \sin{\left (\alpha_{2} \right )} \sin{\left (\theta_{2} \right )} \cos{\left (\theta_{1} \right )} & d_{2} \sin{\left (\alpha_{1} \right )} \sin{\left (\theta_{1} \right )} + l_{1} \cos{\left (\theta_{1} \right )} - l_{2} \sin{\left (\theta_{1} \right )} \sin{\left (\theta_{2} \right )} \cos{\left (\alpha_{1} \right )} + l_{2} \cos{\left (\theta_{1} \right )} \cos{\left (\theta_{2} \right )}\\\sin{\left (\theta_{1} \right )} \cos{\left (\theta_{2} \right )} + \sin{\left (\theta_{2} \right )} \cos{\left (\alpha_{1} \right )} \cos{\left (\theta_{1} \right )} & - \sin{\left (\alpha_{1} \right )} \sin{\left (\alpha_{2} \right )} \cos{\left (\theta_{1} \right )} - \sin{\left (\theta_{1} \right )} \sin{\left (\theta_{2} \right )} \cos{\left (\alpha_{2} \right )} + \cos{\left (\alpha_{1} \right )} \cos{\left (\alpha_{2} \right )} \cos{\left (\theta_{1} \right )} \cos{\left (\theta_{2} \right )} & - \sin{\left (\alpha_{1} \right )} \cos{\left (\alpha_{2} \right )} \cos{\left (\theta_{1} \right )} + \sin{\left (\alpha_{2} \right )} \sin{\left (\theta_{1} \right )} \sin{\left (\theta_{2} \right )} - \sin{\left (\alpha_{2} \right )} \cos{\left (\alpha_{1} \right )} \cos{\left (\theta_{1} \right )} \cos{\left (\theta_{2} \right )} & - d_{2} \sin{\left (\alpha_{1} \right )} \cos{\left (\theta_{1} \right )} + l_{1} \sin{\left (\theta_{1} \right )} + l_{2} \sin{\left (\theta_{1} \right )} \cos{\left (\theta_{2} \right )} + l_{2} \sin{\left (\theta_{2} \right )} \cos{\left (\alpha_{1} \right )} \cos{\left (\theta_{1} \right )}\\\sin{\left (\alpha_{1} \right )} \sin{\left (\theta_{2} \right )} & \sin{\left (\alpha_{1} \right )} \cos{\left (\alpha_{2} \right )} \cos{\left (\theta_{2} \right )} + \sin{\left (\alpha_{2} \right )} \cos{\left (\alpha_{1} \right )} & - \sin{\left (\alpha_{1} \right )} \sin{\left (\alpha_{2} \right )} \cos{\left (\theta_{2} \right )} + \cos{\left (\alpha_{1} \right )} \cos{\left (\alpha_{2} \right )} & d_{1} + d_{2} \cos{\left (\alpha_{1} \right )} + l_{2} \sin{\left (\alpha_{1} \right )} \sin{\left (\theta_{2} \right )}\\0 & 0 & 0 & 1\end{matrix}\right]
 \end{document}
