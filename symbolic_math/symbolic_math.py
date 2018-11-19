@@ -45,6 +45,8 @@ subs = [
     (l_3, 5.74),
     (l_4, 0),
     (l_5, 0),
+    (t_3, 34),
+    (t_4, 67)
 ]
 
 
@@ -60,20 +62,13 @@ def round_expr(expr, num_digits):
 
 
 output = eye(4)
-a_matrices = [a_matrix(t_1, a_1, l_1, d_1),
-              a_matrix(t_2, a_2, l_2, d_2)]
-              # a_matrix(t_3, a_3, l_3, d_3),
-              # a_matrix(t_4, a_4, l_4, d_4),
-              # a_matrix(t_5, a_5, l_5, d_5)]
+a_matrices = [a_matrix(t_3, a_3, l_3, d_3),
+              a_matrix(t_4, a_4, l_4, d_4)]
+ #a_matrix(t_5, a_5, l_5, d_5)]# [a_matrix(t_1, a_1, l_1, d_1),
+              # a_matrix(t_2, a_2, l_2, d_2),
+
 
 for matrix in a_matrices:
     output = output*matrix
 
-q = Matrix([[0.22, 0, 0.97, 9.75],
-            [0.97, 0,  -0.22, 14.1],
-            [0, 1, 0, 16.39],
-            [0, 0, 0, 1]])
-
-print(solve((output-q)), t_1)
-
-#print(latex((round_expr(output.subs(subs), 2))))
+print(latex((round_expr(output.subs(subs), 2))))
