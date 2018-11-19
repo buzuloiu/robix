@@ -9,9 +9,9 @@ config = {
 }
 
 thetas = [
-    ['theta1', 12],
-    ['theta2', 23],
-    ['theta3', 34],
-    ['theta4', 67],
-    ['theta5', 56]
+    ['theta1', 0],
+    ['theta2', 0],
+    ['theta3', 90],
+    ['theta4', 0],
+    ['theta5', 0]
 ]

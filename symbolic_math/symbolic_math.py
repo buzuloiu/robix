@@ -1,4 +1,4 @@
-from sympy import Symbol, cos, sin
+from sympy import Symbol, cos, sin, asin, acos, atan
 from sympy import *
 from sympy.printing import latex
 from sympy.matrices import Matrix, eye
@@ -29,6 +29,14 @@ a_3 = Symbol('alpha_3')
 a_4 = Symbol('alpha_4')
 a_5 = Symbol('alpha_5')
 
+q_23 = Symbol('Q_23')
+q_24 = Symbol('Q_24')
+q_31 = Symbol('Q_31')
+q_32 = Symbol('Q_32')
+q_34 = Symbol('Q_34')
+q_33 = Symbol('Q_33')
+
+
 subs = [
     (a_1, deg2rad(0)),
     (a_2, deg2rad(90)),
@@ -45,8 +53,6 @@ subs = [
     (l_3, 5.74),
     (l_4, 0),
     (l_5, 0),
-    (t_3, 34),
-    (t_4, 67)
 ]
 
 
@@ -62,13 +68,30 @@ def round_expr(expr, num_digits):
 
 
 output = eye(4)
-a_matrices = [a_matrix(t_3, a_3, l_3, d_3),
-              a_matrix(t_4, a_4, l_4, d_4)]
- #a_matrix(t_5, a_5, l_5, d_5)]# [a_matrix(t_1, a_1, l_1, d_1),
-              # a_matrix(t_2, a_2, l_2, d_2),
-
+a_matrices = [a_matrix(t_1, a_1, l_1, d_1),
+              a_matrix(t_2, a_2, l_2, d_2),
+              a_matrix(t_3, a_3, l_3, d_3),
+              a_matrix(t_4, a_4, l_4, d_4),
+              a_matrix(t_5, a_5, l_5, d_5)]
 
 for matrix in a_matrices:
     output = output*matrix
 
+#q1
+q_1 = asin(((q_24-d_5*q_23-((l_3*q_23))/sin(t_3+t_4))-(l_2*q_23/sin(t_3+t_4)))/l_1)
+
+q_2 = asin((q_23)/(sin(t_3+t_4)))-t_1
+
+q_3 = asin((q_34-d_5*q_33-d_1)/l_3)
+
+q_4 = asin(q_33)-t_3
+
+q_5 = atan(-1*q_32/q_31)
+
+
 print(latex((round_expr(output.subs(subs), 2))))
+print(latex(q_1))
+print(latex(q_2))
+print(latex(q_3))
+print(latex(q_4))
+print(latex(q_5))
