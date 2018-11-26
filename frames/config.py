@@ -15,3 +15,13 @@ thetas = [
     ['theta4', 0],
     ['theta5', 0]
 ]
+# circle: diameter 2.5cm
+# triangle: side 2.7cm
+# square: side 2.2cm
+#rectangle: sideA 1.9cm sideB 3.6cm 
+blocks = {
+    'circle': {'open': , 'close':}
+    'triangle':
+    'square':
+    'reactangle':
+}
