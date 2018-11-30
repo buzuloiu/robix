@@ -25,14 +25,19 @@ def compute_a_matrix(name, degrees):
                      [      0,                 np.sin(alpha),                 np.cos(alpha),                   d        ],
                      [      0,                       0,                            0,                          1        ]])
 
-if __name__ == '__main__':
+def forward_kinematics(theta_1, theta_2, theta_3, theta_4, theta_5):
     effector_base = np.eye(4)
 
-    for i in [1, 2, 3, 4, 5]:
-        name = 'theta{}'.format(i)
-        effector_base = np.matmul(effector_base, compute_a_matrix(name, convert_robix_to_degrees(name, int(sys.argv[i]))))
+    effector_base = np.matmul(effector_base, compute_a_matrix('theta_1', convert_robix_to_degrees('theta_1', theta_1)))
+    effector_base = np.matmul(effector_base, compute_a_matrix('theta_2', convert_robix_to_degrees('theta_2', theta_2)))
+    effector_base = np.matmul(effector_base, compute_a_matrix('theta_3', convert_robix_to_degrees('theta_3', theta_3)))
+    effector_base = np.matmul(effector_base, compute_a_matrix('theta_4', convert_robix_to_degrees('theta_4', theta_4)))
+    effector_base = np.matmul(effector_base, compute_a_matrix('theta_5', convert_robix_to_degrees('theta_5', theta_5)))
 
-    effector_base = np.matmul(effector_base, np.array([[0], [0], [0], [1]]))
+    return effector_base
+
+if __name__ == '__main__':
+    effector_base = forward_kinematics(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
 
     print 'x: {}'.format(effector_base[0])
     print 'y: {}'.format(effector_base[1])
