@@ -1,5 +1,6 @@
 from kinematics.config import robix
 import numpy as np
+import sys
 
 
 def asind(input):
@@ -34,17 +35,17 @@ def inverse_kinematics(q_matrix):
 
     # Defining Di and Li
     # Di vaLues
-    d1 = robix['theta1']['d']
-    d2 = robix['theta2']['d']
-    d3 = robix['theta3']['d']
-    d4 = robix['theta4']['d']
-    d5 = robix['theta5']['d']
+    d1 = robix['theta_1']['d']
+    d2 = robix['theta_2']['d']
+    d3 = robix['theta_3']['d']
+    d4 = robix['theta_4']['d']
+    d5 = robix['theta_5']['d']
 
-    l1 = robix['theta1']['l']
-    l2 = robix['theta2']['l']
-    l3 = robix['theta3']['l']
-    l4 = robix['theta4']['l']
-    l5 = robix['theta5']['l']
+    l1 = robix['theta_1']['l']
+    l2 = robix['theta_2']['l']
+    l3 = robix['theta_3']['l']
+    l4 = robix['theta_4']['l']
+    l5 = robix['theta_5']['l']
 
     """
     # finding thetas

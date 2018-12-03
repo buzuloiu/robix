@@ -9,11 +9,11 @@ config = {
 }
 
 thetas = [
-    ['theta1', 1],
-    ['theta2', 2],
-    ['theta3', 3],
-    ['theta4', 4],
-    ['theta5', 5]
+    ['theta1', 0],
+    ['theta2', 0],
+    ['theta3', 0],
+    ['theta4', 0],
+    ['theta5', 0]
 ]
 # circle: diameter 2.5cm
 # triangle: side 2.7cm

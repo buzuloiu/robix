@@ -1,5 +1,4 @@
 from kinematics import config
-
 import sys
 import numpy as np
 
@@ -26,22 +25,22 @@ def compute_a_matrix(name, degrees):
                      [      0,                 np.sin(alpha),                 np.cos(alpha),                   d        ],
                      [      0,                       0,                            0,                          1        ]])
 
-def forward_kinematics(theta_1, theta_2, theta_3, theta_4, theta_5):
+def forward_kinematics(thetas):
     effector_base = np.eye(4)
 
-    effector_base = np.matmul(effector_base, compute_a_matrix('theta_1', convert_robix_to_degrees('theta_1', theta_1)))
-    effector_base = np.matmul(effector_base, compute_a_matrix('theta_2', convert_robix_to_degrees('theta_2', theta_2)))
-    effector_base = np.matmul(effector_base, compute_a_matrix('theta_3', convert_robix_to_degrees('theta_3', theta_3)))
-    effector_base = np.matmul(effector_base, compute_a_matrix('theta_4', convert_robix_to_degrees('theta_4', theta_4)))
-    effector_base = np.matmul(effector_base, compute_a_matrix('theta_5', convert_robix_to_degrees('theta_5', theta_5)))
+    effector_base = np.matmul(effector_base, compute_a_matrix('theta_1', thetas[0]))
+    effector_base = np.matmul(effector_base, compute_a_matrix('theta_2', thetas[1]))
+    effector_base = np.matmul(effector_base, compute_a_matrix('theta_3', thetas[2]))
+    effector_base = np.matmul(effector_base, compute_a_matrix('theta_4', thetas[3]))
+    effector_base = np.matmul(effector_base, compute_a_matrix('theta_5', thetas[4]))
 
     return effector_base
 
 if __name__ == '__main__':
     base = np.array([[0], [0], [0], [1]])
-    effector_base = forward_kinematics(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+    effector_base = forward_kinematics([int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]),
+                                        int(sys.argv[4]), int(sys.argv[5])])
 
     print ('x: {}'.format(effector_base[0]))
     print ('y: {}'.format(effector_base[1]))
     print ('z: {}'.format(effector_base[2]))
-    import pdb; pdb.set_trace()
