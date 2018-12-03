@@ -1,3 +1,127 @@
+from kinematics.config import robix
+import numpy as np
+
+
+def asind(input):
+    return np.degrees(np.arcsin(input))
+
+
+def sind(degrees):
+    return np.sin(np.deg2rad(degrees))
+
+
+def cosd(degrees):
+    return np.cos(np.deg2rad(degrees))
+
+
+def atan2d(x1, x2):
+    return np.degrees(np.arctan2(x1, x2))
+
+
+def inverse_kinematics(q_matrix):
+    q11 = q_matrix[0, 0]
+    q12 = q_matrix[0, 1]
+    q13 = q_matrix[0, 2]
+    q14 = q_matrix[0, 3]
+    q21 = q_matrix[1, 0]
+    q22 = q_matrix[1, 1]
+    q23 = q_matrix[1, 2]
+    q24 = q_matrix[1, 3]
+    q31 = q_matrix[2, 0]
+    q32 = q_matrix[2, 1]
+    q33 = q_matrix[2, 2]
+    q34 = q_matrix[2, 3]
+
+    # Defining Di and Li
+    # Di vaLues
+    d1 = robix['theta1']['d']
+    d2 = robix['theta2']['d']
+    d3 = robix['theta3']['d']
+    d4 = robix['theta4']['d']
+    d5 = robix['theta5']['d']
+
+    l1 = robix['theta1']['l']
+    l2 = robix['theta2']['l']
+    l3 = robix['theta3']['l']
+    l4 = robix['theta4']['l']
+    l5 = robix['theta5']['l']
+
+    """
+    # finding thetas
+    """
+
+    # Theta 3
+    T3 = asind((q34-d5*q33-d1)/l3)
+
+    # Theta 4
+    T4 = asind(q33)-T3
+
+    # Theta 5
+    T5 = atan2d(-q32, q31)-10
+
+    # Theta Unofficials
+    T1 = 0
+    T2 = 0
+    TA = T1 + T2
+    TB = T3 + T4
+
+    # Theta 1
+    T1 = asind((q24-d5*sind(TA)*cosd(TB)-l3*sind(TA)*cosd(T3)+d4*cosd(TA)-l2*sind(TA))/l1)
+
+    # Theta 2
+    if q31 == 0:
+        T2 = atan2d(q23, q13)-T1
+    else:
+        T2 = asind(q23*cosd(T5)/q31)-T1
+
+    """
+    iterate
+    """
+    TA = T1 + T2
+    TB = T3 + T4
+
+    # Theta 1
+    T1 = asind((q24-d5*sind(TA)*cosd(TB)-l3*sind(TA)*cosd(T3)+d4*cosd(TA)-l2*sind(TA))/l1)
+
+    # Theta 2
+
+    if q31 == 0:
+        T2 = atan2d(q23, q13)-T1
+
+    else:
+        T2 = asind(q23*cosd(T5)/q31)-T1
+    """
+    iterate
+    """
+    TA = T1 + T2
+    TB = T3 + T4
+
+    # Theta 1
+    T1 = asind((q24-d5*sind(TA)*cosd(TB)-l3*sind(TA)*cosd(T3)+d4*cosd(TA)-l2*sind(TA))/l1)
+
+    # Theta 2
+    if q31 == 0:
+        T2 = atan2d(q23, q13)-T1
+    else:
+        T2 = asind(q23*cosd(T5)/q31)-T1
+
+    """
+    # The just incases
+    # T2 = acosd(q13/cosd(TA))-T3
+    # T2 = acosd(q13*cosd(T5)/q31)-T1
+    # T2 = atan2d(q23, q13)-T1
+    # T2 = acosd((q13*cosd(atan2d(-q32, q31)))/q31)-T1
+    # T2 = asind(q23*cosd(T5)/q31)-T1
+    """
+    t = [-1*np.real(T1), -1*np.real(T2), -1*np.real(T3), np.real(T4), -1*np.real(T5)]
+
+    for item in t:
+        if (abs(item) > 90):
+            raise Exception("error: input out of range")
+    return t
+
+
+"""
 import numpy as np
 
 from sympy import Symbol, cos, sin, asin, acos, atan
@@ -44,3 +168,12 @@ print(latex(q_2))
 print(latex(q_3))
 print(latex(q_4))
 print(latex(q_5))
+"""
+
+
+if __name__ == "__main__":
+    np.set_printoptions(suppress=True)
+    print(np.round(inverse_kinematics(np.matrix([[0.98, -0.17,  0,   18.43],
+                                                 [-0.17, -0.98, 0,   0],
+                                                 [0,    0,   -1,    2.4],
+                                                 [0,    0,    0,    1]])), 2))

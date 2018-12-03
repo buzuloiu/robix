@@ -41,7 +41,7 @@ if __name__ == '__main__':
     base = np.array([[0], [0], [0], [1]])
     effector_base = forward_kinematics(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
 
-    effector = np.matmul(effector_base, base)
-    print 'x: {}'.format(effector[0])
-    print 'y: {}'.format(effector[1])
-    print 'z: {}'.format(effector[2])
+    print ('x: {}'.format(effector_base[0]))
+    print ('y: {}'.format(effector_base[1]))
+    print ('z: {}'.format(effector_base[2]))
+    import pdb; pdb.set_trace()

@@ -9,19 +9,19 @@ config = {
 }
 
 thetas = [
-    ['theta1', 0],
-    ['theta2', 0],
-    ['theta3', 90],
-    ['theta4', 0],
-    ['theta5', 0]
+    ['theta1', 1],
+    ['theta2', 2],
+    ['theta3', 3],
+    ['theta4', 4],
+    ['theta5', 5]
 ]
 # circle: diameter 2.5cm
 # triangle: side 2.7cm
 # square: side 2.2cm
 #rectangle: sideA 1.9cm sideB 3.6cm
 blocks = {
-    'circle': {'open': -1400, 'close': -443}
-    'triangle' {'open':-1400, 'close': -409}
-    'square' {'open': -1400, 'close': -217}:
-    'reactangle' {'open': -1400, 'close': -200}:
+    'circle': {'open': -1400, 'close': -443},
+    'triangle' :{'open':-1400, 'close': -409},
+    'square' :{'open': -1400, 'close': -217},
+    'reactangle' :{'open': -1400, 'close': -200}
 }

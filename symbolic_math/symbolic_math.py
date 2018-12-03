@@ -77,7 +77,7 @@ a_matrices = [a_matrix(t_1, a_1, l_1, d_1),
 for matrix in a_matrices:
     output = output*matrix
 
-#q1
+# q1
 q_1 = asin(((q_24-d_5*q_23-((l_3*q_23))/sin(t_3+t_4))-(l_2*q_23/sin(t_3+t_4)))/l_1)
 
 q_2 = asin((q_23)/(sin(t_3+t_4)))-t_1
