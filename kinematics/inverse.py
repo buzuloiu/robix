@@ -4,6 +4,8 @@ import sys
 
 
 def asind(input):
+    print(input)
+    input = np.round(input, 5)
     return np.degrees(np.arcsin(input))
 
 
@@ -16,7 +18,12 @@ def cosd(degrees):
 
 
 def atan2d(x1, x2):
-    return np.degrees(np.arctan2(x1, x2))
+    angle = np.degrees(np.arctan2(x1, x2))
+    if angle > 0:
+        return angle % 180
+    if angle < 0:
+        return angle % -1*180
+
 
 
 def inverse_kinematics(q_matrix):
@@ -58,7 +65,7 @@ def inverse_kinematics(q_matrix):
     T4 = asind(q33)-T3
 
     # Theta 5
-    T5 = atan2d(-q32, q31)-10
+    T5 = atan2d(-1*q32, q31)-10
 
     # Theta Unofficials
     T1 = 0
@@ -114,11 +121,18 @@ def inverse_kinematics(q_matrix):
     # T2 = acosd((q13*cosd(atan2d(-q32, q31)))/q31)-T1
     # T2 = asind(q23*cosd(T5)/q31)-T1
     """
-    t = [-1*np.real(T1), -1*np.real(T2), -1*np.real(T3), np.real(T4), -1*np.real(T5)]
+    t = [np.round(-1*np.real(T1), 1),
+         np.round(-1*np.real(T2), 1),
+         np.round(-1*np.real(T3), 1),
+         np.round(np.real(T4), 1),
+         np.round(-1*np.real(T5), 1)]
 
     for item in t:
-        if (abs(item) > 90):
-            raise Exception("error: input out of range")
+        _item = np.round(item, 1)
+        if not (_item >= robix['theta_{}'.format(t.index(item)+1)]['min'] and _item <= robix['theta_{}'.format(t.index(item)+1)]['max']):
+            raise ValueError("calculated theta_{} = {} out of range [{}, {}]: not a valid robot config"
+                             .format(t.index(item)+1, item, robix['theta_{}'.format(t.index(item)+1)]['min'],
+                                     robix['theta_{}'.format(t.index(item)+1)]['max']))
     return t
 
 
