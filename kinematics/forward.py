@@ -11,6 +11,7 @@ def convert_degrees_to_robix(name, degrees):
     )
 
 def convert_robix_to_degrees(name, robix):
+    robix = int(robix)
     if robix not in range(-1400, 1401):
         raise Exception('Robix motor "{}" is out of range (-1400, 1400)'.format(name))
     return ((config.robix[name]['max'] - config.robix[name]['min'])*(robix*config.robix[name]['theta_sign'] - config.robix[name]['offset']))/2800.
@@ -37,8 +38,10 @@ def forward_kinematics(theta_1, theta_2, theta_3, theta_4, theta_5):
     return effector_base
 
 if __name__ == '__main__':
+    base = np.array([[0], [0], [0], [1]])
     effector_base = forward_kinematics(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
 
-    print 'x: {}'.format(effector_base[0])
-    print 'y: {}'.format(effector_base[1])
-    print 'z: {}'.format(effector_base[2])
+    effector = np.matmul(effector_base, base)
+    print 'x: {}'.format(effector[0])
+    print 'y: {}'.format(effector[1])
+    print 'z: {}'.format(effector[2])
