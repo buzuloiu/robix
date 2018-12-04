@@ -1,12 +1,17 @@
 import cv2
 import pickle
 import numpy as np
-from camera.stream import stream
 import sklearn.naive_bayes
 import skimage.measure
 
 from matplotlib import pyplot as plt
 import matplotlib.patches as mpatches
+
+PIXELS_PER_CM = 7.344
+IMAGE_SIZE = (288, 352)
+CAMERA_ORIGIN = (IMAGE_SIZE[0]/2, IMAGE_SIZE[1]-15)
+
+from camera.stream import stream
 
 class ObjectDetector(object):
 	def __init__(self, model_filepath='camera/object_detector.model'):
@@ -43,7 +48,7 @@ class ObjectDetector(object):
 			region.eccentricity,
 		]
 
-	def clasified_regions(self, frame):
+	def clasified_regions(self, frame=stream.read()[1]):
 		regions = self.labeled_regions(frame)
 		if regions == []:
 			return []
@@ -56,8 +61,8 @@ class ObjectDetector(object):
 		for index, prediction in enumerate(predictions):
 			minr, minc, maxr, maxc = regions[index].bbox
 			center = (
-				minc + ((maxc - minc) / 2),
-				minr + ((maxr - minr) / 2)
+				PIXELS_PER_CM*(minc + ((maxc - minc) / 2)),
+				PIXELS_PER_CM*(minr + ((maxr - minr) / 2))
 			)
 			minor_axis_orientation = np.rad2deg(regions[index].orientation + np.pi/2)
 			region_classes.append({
@@ -81,9 +86,9 @@ class ObjectDetector(object):
 			pickle.dumps(self.model, model_file)
 
 if __name__ == '__main__':
-	object_detector = ObjectDetector(model_filepath='camera/object-detector-better-train.model')
+	object_detector = ObjectDetector(model_filepath='camera/object_detector.model')
 	sample_frame = stream.read()[1]
-	regions = object_detector.clasified_regions(sample_frame)
+	regions = object_detector.clasified_regions(frame=sample_frame)
 	fig, ax = plt.subplots(figsize=(10, 6))
 	ax.imshow(object_detector.preprocess(sample_frame))
 
@@ -92,6 +97,6 @@ if __name__ == '__main__':
 		ax.add_patch(marker)
 		ax.annotate('{}'.format(index), region['center'])
 
-		print 'confidence: {}; class: {}'.format(region['confidence'], region['class'])
+		print 'confidence: {}; class: {}; location {}; orientation'.format(region['confidence'], region['class'], region['position'], region['orientation'])
 
 	plt.show()
