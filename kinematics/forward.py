@@ -2,24 +2,42 @@ from kinematics import config
 import sys
 import numpy as np
 
-def convert_degrees_to_robix(name, degrees):
+def _convert_degrees_to_robix(degrees, name):
     if degrees < config.robix[name]['min'] and degrees > config.robix[name]['max']:
         raise Exception('Robix motor "{}" is out of range ({}, {})'.format(name, config.robix[name]['min'], config.robix[name]['max']))
     return int(
         (2800./(config.robix[name]['max'] - config.robix[name]['min']))*degrees*config.robix[name]['theta_sign'] + config.robix[name]['offset']
     )
 
-def convert_robix_to_degrees(name, robix):
+def convert_degrees_to_robix(degrees, name=None):
+    if name is None:
+        robix = []
+        for index, deg in enumerate(degrees):
+            robix.append(_convert_degrees_to_robix(deg, 'theta_{}'.format(index + 1)))
+        return np.array(robix)
+    else:
+        return _convert_degrees_to_robix(degrees, name)
+
+def _convert_robix_to_degrees(robix, name):
     robix = int(robix)
     if robix not in range(-1400, 1401):
         raise Exception('Robix motor "{}" is out of range (-1400, 1400)'.format(name))
     return ((config.robix[name]['max'] - config.robix[name]['min'])*(robix*config.robix[name]['theta_sign'] - config.robix[name]['offset']))/2800.
 
+def convert_robix_to_degrees(robix, name=None):
+    if name is None:
+        degrees = []
+        for index, rob in enumerate(robix):
+            degrees.append(_convert_robix_to_degrees(rob, 'theta_{}'.format(index + 1)))
+        return np.array(degrees)
+    else:
+        return _convert_degrees_to_robix(robix, name)
+
 def compute_a_matrix(name, degrees):
     l = config.robix[name]['l']
     d = config.robix[name]['d']
     alpha = np.deg2rad(config.robix[name]['alpha'])
-    theta = np.deg2rad(config.robix[name]['theta_sign']*degrees+config.robix[name]['theta_offset'])
+    theta = np.deg2rad(degrees)
     return np.array([[np.cos(theta), (-1*np.sin(theta)*np.cos(alpha)),  (np.sin(theta)*np.sin(alpha)),   l*np.cos(theta)],
                      [np.sin(theta),    np.cos(theta)*np.cos(alpha),   (-1*np.cos(theta)*np.sin(alpha)), l*np.sin(theta)],
                      [      0,                 np.sin(alpha),                 np.cos(alpha),                   d        ],
