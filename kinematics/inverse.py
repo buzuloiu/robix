@@ -84,14 +84,14 @@ def inverse_kinematics(q_matrix):
     T3 = asind((q34-d5*q33-d1)/l3)
 
     # Theta 4
-    T4 = acosd(-1*q33)-T3-90
+    T4 = acosd(-1*q33)-T3
 
     # Theta 5
-    T5 = atan2d(-1*q32, q31)-10
+    T5 = atan2d(-1*q32, q31)
 
-    m = (q11)/((q23/q13)*sind(T5+10)-q33*cosd(T5+10))
+    m = (q11)/((q23/q13)*sind(T5)-q33*cosd(T5))
 
-    n = (q12)/(cosd(T5+10)+(q13/q23)*q33*sind(T5+10))
+    n = (q12)/(cosd(T5+10)+(q13/q23)*q33*sind(T5))
 
     T1 = atan2d((q24-10*q23-l3*n*cosd(T3)-l2*n),
                 (q14-10*q13-l3*m*cosd(T3)-l2*m))
@@ -108,11 +108,11 @@ def inverse_kinematics(q_matrix):
     # T2 = acosd((q13*cosd(atan2d(-q32, q31)))/q31)-T1
     # T2 = asind(q23*cosd(T5)/q31)-T1
     """
-    t = [np.round(-1*np.real(T1), 1),
-         np.round(-1*np.real(T2), 1),
-         np.round(-1*np.real(T3), 1),
+    t = [np.round(np.real(T1), 1),
+         np.round(np.real(T2), 1),
+         np.round(np.real(T3), 1),
          np.round(np.real(T4), 1),
-         np.round(-1*np.real(T5), 1)]
+         np.round(np.real(T5), 1)]
 
     for item in t:
         _item = np.round(item, 1)

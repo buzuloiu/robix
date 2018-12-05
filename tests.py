@@ -1,8 +1,8 @@
 import numpy as np
 from kinematics.forward  import convert_robix_to_degrees, convert_degrees_to_robix
 
-angle = 45 # 45 - 90*np.random.rand()
-print angle
-robix = convert_degrees_to_robix(angle, name='theta_1')
-print robix
-print convert_robix_to_degrees(robix, name='theta_1')
+robixs = 1400-2800*np.random.rand(5) # 45 - 90*np.random.rand()
+print 'Robix {}'.format(robixs)
+angles = convert_robix_to_degrees(robixs)
+print 'Angle {}'.format(angles)
+print 'Robix {}'.format(convert_degrees_to_robix(angles))

@@ -2,24 +2,35 @@ from kinematics import config
 import sys
 import numpy as np
 
-def convert_degrees_to_robix(name, degrees):
+def _convert_degrees_to_robix(name, degrees):
     if degrees < config.robix[name]['min'] and degrees > config.robix[name]['max']:
         raise Exception('Robix motor "{}" is out of range ({}, {})'.format(name, config.robix[name]['min'], config.robix[name]['max']))
     return int(
-        (2800./(config.robix[name]['max'] - config.robix[name]['min']))*degrees
+        ((degrees - config.robix[name]['theta_offset'])*2800.)/((config.robix[name]['max'] - config.robix[name]['min']) * config.robix[name]['theta_sign'])
     )
 
-def convert_robix_to_degrees(name, robix):
+def convert_degrees_to_robix(thetas):
+    for i, theta in enumerate(thetas):
+        thetas[i] = _convert_degrees_to_robix('theta_{}'.format(i+1), theta)
+    return thetas
+
+def _convert_robix_to_degrees(name, robix):
     robix = int(robix)
     if robix not in range(-1400, 1401):
         raise Exception('Robix motor "{}" is out of range (-1400, 1400)'.format(name))
-    return ((config.robix[name]['max'] - config.robix[name]['min'])*(robix))/2800.
+    return (((config.robix[name]['max'] - config.robix[name]['min'])*(robix*config.robix[name]['theta_sign']))/2800.)+ config.robix[name]['theta_offset']
+
+def convert_robix_to_degrees(robixs):
+    for i, robix in enumerate(robixs):
+        robixs[i] = _convert_robix_to_degrees('theta_{}'.format(i+1), robix)
+    return robixs
+
 
 def compute_a_matrix(name, degrees):
     l = config.robix[name]['l']
     d = config.robix[name]['d']
     alpha = np.deg2rad(config.robix[name]['alpha'])
-    theta = np.deg2rad(config.robix[name]['theta_sign']*degrees+config.robix[name]['theta_offset'])
+    theta = np.deg2rad(degrees)
     return np.array([[np.cos(theta), (-1*np.sin(theta)*np.cos(alpha)),  (np.sin(theta)*np.sin(alpha)),   l*np.cos(theta)],
                      [np.sin(theta),    np.cos(theta)*np.cos(alpha),   (-1*np.cos(theta)*np.sin(alpha)), l*np.sin(theta)],
                      [      0,                 np.sin(alpha),                 np.cos(alpha),                   d        ],
@@ -39,9 +50,11 @@ def forward_kinematics(thetas):
 
 if __name__ == '__main__':
     base = np.array([[0], [0], [0], [1]])
-    effector_base = forward_kinematics([int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]),
-                                        int(sys.argv[4]), int(sys.argv[5])])
-
+    effector_base = forward_kinematics(convert_robix_to_degrees([int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]),
+                                        int(sys.argv[4]), int(sys.argv[5])]))
+    print np.round(effector_base, 2)
+    '''
     print ('x: {}'.format(effector_base[0]))
     print ('y: {}'.format(effector_base[1]))
     print ('z: {}'.format(effector_base[2]))
+    '''
