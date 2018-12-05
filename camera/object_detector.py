@@ -9,7 +9,7 @@ import matplotlib.patches as mpatches
 
 PIXELS_PER_CM = 7.344
 IMAGE_SIZE = (288, 352)
-CAMERA_ORIGIN = (IMAGE_SIZE[0]/2, IMAGE_SIZE[1]-15)
+BASE = (IMAGE_SIZE[1]/2, IMAGE_SIZE[0]-15)
 
 
 class ObjectDetector(object):
@@ -47,7 +47,7 @@ class ObjectDetector(object):
 			region.eccentricity,
 		]
 
-	def clasified_regions(self, stream.read()[1]):
+	def clasified_regions(self, frame):
 		regions = self.labeled_regions(frame)
 		if regions == []:
 			return []
@@ -60,8 +60,8 @@ class ObjectDetector(object):
 		for index, prediction in enumerate(predictions):
 			minr, minc, maxr, maxc = regions[index].bbox
 			center = (
-				PIXELS_PER_CM*(minc + ((maxc - minc) / 2)),
-				PIXELS_PER_CM*(minr + ((maxr - minr) / 2))
+				(minc + ((maxc - minc) / 2)),
+				(minr + ((maxr - minr) / 2))
 			)
 			minor_axis_orientation = np.rad2deg(regions[index].orientation + np.pi/2)
 			region_classes.append({
@@ -72,6 +72,21 @@ class ObjectDetector(object):
 			})
 
 		return region_classes
+
+	def wrt_base(self, region):
+		center = np.array([
+			[region['center'][0]],
+			[region['center'][1]],
+			[1]
+		])
+		Q_camera_base = np.array([
+			[ 0,-1, BASE[1]],
+			[-1, 0, BASE[0]],
+			[0,  0,    1   ],
+		])
+		center = np.matmul(Q_camera_base, center)
+		region['center'] = (center[0][0]/PIXELS_PER_CM, center[1][0]/PIXELS_PER_CM)
+		return region
 
 	def train(self, regions, labels):
 		region_features = []
@@ -97,6 +112,7 @@ if __name__ == '__main__':
 		ax.add_patch(marker)
 		ax.annotate('{}'.format(index), region['center'])
 
-		print 'confidence: {}; class: {}; location {}; orientation'.format(region['confidence'], region['class'], region['position'], region['orientation'])
+		region = object_detector.wrt_base(region)
+		print 'confidence: {}; class: {}; location {}; orientation'.format(region['confidence'], region['class'], (region['center'][0], region['center'][1]), region['orientation'])
 
 	plt.show()

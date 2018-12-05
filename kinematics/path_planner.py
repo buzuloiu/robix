@@ -1,4 +1,7 @@
+import numpy as np
+
 from camera.object_detector import ObjectDetector
+from camera.stream import stream
 from kinematics.forward import convert_degrees_to_robix
 from kinematics.inverse import inverse_kinematics
 
@@ -19,10 +22,19 @@ def generate_robix_command(thetas):
     )
 
 def pick_and_place(block, slot):
-    locate_block = inverse_kinematics(trpy_evolving(block['center'][0], block['center'][1], 10, block['orientation'], 180, 0))
-    pick_block   = inverse_kinematics(trpy_evolving(block['center'][0], block['center'][1], 0, block['orientation'], 180, 0))
-    locate_slot  = inverse_kinematics(trpy_evolving(slot['center'][0], slot['center'][1], 10, slot['orientation'], 180, 0))
-    place_slot   = inverse_kinematics(trpy_evolving(slot['center'][0], slot['center'][1], 0, slot['orientation'], 180, 0))
+    try:
+        locate_block = inverse_kinematics(trpy_evolving(block['center'][0], block['center'][1], 4.5, block['orientation'], 90, 0))
+        pick_block   = inverse_kinematics(trpy_evolving(block['center'][0], block['center'][1], 2.5, block['orientation'], 45, 0))
+    except:
+        print '{} is out of workspace'.format(block['class'])
+        return ''
+
+    try:
+        locate_slot  = inverse_kinematics(trpy_evolving(slot['center'][0], slot['center'][1], 4.5, slot['orientation'], 90, 0))
+        place_slot   = inverse_kinematics(trpy_evolving(slot['center'][0], slot['center'][1], 2.5, slot['orientation'], 45, 0))
+    except:
+        print '{} is out of workspace'.format(slot['class'])
+        return ''
 
     # pick and place routine
     cmd=''
@@ -38,16 +50,21 @@ def pick_and_place(block, slot):
 
 if __name__ == '__main__':
     object_detector = ObjectDetector()
-    regions = object_detector.clasified_regions()
-
+    regions = object_detector.clasified_regions(stream.read()[1])
+    regions = map(object_detector.wrt_base, regions)
+    for region in regions:
+        print region
     blocks = [ region for region in regions if region['class'].endswith('block') ]
     slots = [ region for region in regions if region['class'].endswith('slot') ]
 
     cmd=''
     for block in blocks:
         block_type = block['class'].split('_')[0]
-        slot = [slot for slot in slots if slot['class'].startswith(block_type)][0]
+        slot = [slot for slot in slots if slot['class'].startswith(block_type)]
+        if len(slot) < 0:
+            print 'could not find slot for {}'.format(block['class'])
+            continue
 
-        cmd += pick_and_place(block, slot)
+        cmd += pick_and_place(block, slot[0])
 
     print cmd
