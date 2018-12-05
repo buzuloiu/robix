@@ -10,14 +10,13 @@ import sys
 
 def asind(input):
     # print(input)
-    input = np.round(input, 5)
     return np.degrees(np.real(np.arcsin(input+0j)))
 
 
 def acosd(input):
     # print(input)
-    input = np.round(input, 5)
     return np.degrees(np.real(np.arccos(input+0j)))
+
 
 def arccos(x):
     y = np.arccos(x + 0j)
@@ -29,8 +28,10 @@ def final_angle(theta_1_2, deg_thetas, target):
     actual = np.matmul(forward_kinematics(thetas), np.array([[0], [0], [0], [1]]))
     return euclidean(target, actual.reshape(4))
 
+
 def cosd(degrees):
     return np.cos(np.deg2rad(degrees))
+
 
 def sind(degrees):
     return np.sin(np.deg2rad(degrees))
@@ -88,39 +89,15 @@ def inverse_kinematics(q_matrix):
     # Theta 5
     T5 = atan2d(-1*q32, q31)-10
 
+    m = (q11)/((q23/q13)*sind(T5+10)-q33*cosd(T5+10))
 
-    # Theta Unofficials
-    T1 = 0
-    T2 = 0
-    TA = T1 + T2
-    TB = T3 + T4
+    n = (q12)/(cosd(T5+10)+(q13/q23)*q33*sind(T5+10))
 
-    # Theta 1
-    T1 = asind((q24-d5*sind(TA)*cosd(TB)-l3*sind(TA)*cosd(T3)+d4*cosd(TA)-l2*sind(TA))/l1)
+    T1 = atan2d((q24-10*q23-l3*n*cosd(T3)-l2*n),
+                (q14-10*q13-l3*m*cosd(T3)-l2*m))
 
-    # Theta 2
-    if q31 == 0:
-        T2 = atan2d(q23, q13)-T1
-    else:
-        T2 = asind(q23*cosd(T5)/q31)-T1
-    for i in range(10):
-        """
-        iterate
-        """
-        TA = T1 + T2
-        TB = T3 + T4
-
-        # Theta 1
-        T1 = asind((q24-d5*sind(TA)*cosd(TB)-l3*sind(TA)*cosd(T3)+d4*cosd(TA)-l2*sind(TA))/l1)
-
-        # Theta 2
-
-        if q31 == 0:
-            T2 = atan2d(q23, q13)-T1
-
-        else:
-            T2 = asind(q23*cosd(T5)/q31)-T1
-
+    #T2 = asind(n)-T1
+    T2 = atan2d(q23, q13)-T1
 
 
     """
@@ -152,7 +129,7 @@ def inverse_kinematics(q_matrix):
 if __name__ == "__main__":
     np.set_printoptions(suppress=True)
 
-    NUM_TRIALS=100
+    NUM_TRIALS = 100
 
     actual_thetas = []
     predicted_thetas = []
@@ -162,16 +139,16 @@ if __name__ == "__main__":
         forward = forward_kinematics(thetas)
         actual_thetas.append(thetas)
         print(thetas)
-        #t = np.matmul(forward, np.array([[0], [0], [0], [1]]))
-        #print t
-        #actual_thetas.append(t)
+        # t = np.matmul(forward, np.array([[0], [0], [0], [1]]))
+        # print t
+        # actual_thetas.append(t)
         predicted = inverse_kinematics(forward)
         predicted_thetas.append(predicted)
         print(predicted)
-        #predicted = forward_kinematics(predicted)
-        #a = np.matmul(predicted,  np.array([[0], [0], [0], [1]]))
-        #predicted_thetas.append(a)
-        #print a
+        # predicted = forward_kinematics(predicted)
+        # a = np.matmul(predicted,  np.array([[0], [0], [0], [1]]))
+        # predicted_thetas.append(a)
+        # print a
 
     predicted_thetas = np.array(predicted_thetas)
-    print(np.absolute(np.array(actual_thetas) -predicted_thetas).max(axis=0))
+    print(np.absolute(np.array(actual_thetas) - predicted_thetas).max(axis= 0))
