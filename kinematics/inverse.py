@@ -1,4 +1,5 @@
 from kinematics.config import robix
+from frames.frames import _compute_trpy_evolving
 import numpy as np
 import sys
 
@@ -18,12 +19,16 @@ def cosd(degrees):
 
 
 def atan2d(x1, x2):
+    if x1 == x2 == 0:
+        return 0
     angle = np.degrees(np.arctan2(x1, x2))
+    return angle
+    """
     if angle > 0:
         return angle % 180
     if angle < 0:
         return angle % -1*180
-
+    """
 
 
 def inverse_kinematics(q_matrix):
@@ -74,6 +79,7 @@ def inverse_kinematics(q_matrix):
     TB = T3 + T4
 
     # Theta 1
+    import pdb; pdb.set_trace()
     T1 = asind((q24-d5*sind(TA)*cosd(TB)-l3*sind(TA)*cosd(T3)+d4*cosd(TA)-l2*sind(TA))/l1)
 
     # Theta 2
@@ -138,7 +144,8 @@ def inverse_kinematics(q_matrix):
 
 if __name__ == "__main__":
     np.set_printoptions(suppress=True)
-    print(np.round(inverse_kinematics(np.matrix([[0.98, -0.17,  0,   18.43],
-                                                 [-0.17, -0.98, 0,   0],
-                                                 [0,    0,   -1,    2.4],
-                                                 [0,    0,    0,    1]])), 2))
+    #x, y, z, r, p, y = int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6])
+    x, y, z, r, p, y = 27+0j, 0+0j, 8+0j, 0+0j, 90+0j, 0+0j
+    matrix = _compute_trpy_evolving(x, y, z, r, p, y)
+    print(matrix)
+    print(np.round(inverse_kinematics(matrix)))

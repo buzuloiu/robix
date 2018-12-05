@@ -1,5 +1,5 @@
 import numpy as np
-
+import sys
 from frames.config import config
 
 def _compute_trpy_evolving(t_x, t_y, t_z, r_z, r_y, r_x):
@@ -18,3 +18,7 @@ def _compute_a_matrix(name, degrees):
                      [np.sin(theta),    np.cos(theta)*np.cos(alpha),   (-1*np.cos(theta)*np.sin(alpha)), l*np.sin(theta)],
                      [      0,                 np.sin(alpha),                 np.cos(alpha),                   d        ],
                      [      0,                       0,                            0,                          1        ]])
+
+if __name__ == "__main__":
+    x, y, z, r, p, y = int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6])
+    print(_compute_trpy_evolving(x, y, z, r, p, y))
