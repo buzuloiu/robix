@@ -1,7 +1,6 @@
 import cv2
 import pickle
 import numpy as np
-from camera.stream import stream
 import sklearn.naive_bayes
 import skimage.measure
 
@@ -11,6 +10,8 @@ import matplotlib.patches as mpatches
 PIXELS_PER_CM = 7.344
 IMAGE_SIZE = (288, 352)
 CAMERA_ORIGIN = (IMAGE_SIZE[0]/2, IMAGE_SIZE[1]-15)
+
+from camera.stream import stream
 
 class ObjectDetector(object):
 	def __init__(self, model_filepath='camera/object_detector.model'):
@@ -47,7 +48,7 @@ class ObjectDetector(object):
 			region.eccentricity,
 		]
 
-	def clasified_regions(self, frame):
+	def clasified_regions(self, frame=stream.read()[1]):
 		regions = self.labeled_regions(frame)
 		if regions == []:
 			return []
@@ -87,7 +88,7 @@ class ObjectDetector(object):
 if __name__ == '__main__':
 	object_detector = ObjectDetector(model_filepath='camera/object_detector.model')
 	sample_frame = stream.read()[1]
-	regions = object_detector.clasified_regions(sample_frame)
+	regions = object_detector.clasified_regions(frame=sample_frame)
 	fig, ax = plt.subplots(figsize=(10, 6))
 	ax.imshow(object_detector.preprocess(sample_frame))
 
