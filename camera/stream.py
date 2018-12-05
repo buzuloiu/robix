@@ -2,7 +2,7 @@ from camera.object_detector import BASE
 import numpy as np
 import cv2
 
-stream = cv2.VideoCapture(2)
+stream = cv2.VideoCapture(1)
 
 if __name__ == '__main__':
     while(True):

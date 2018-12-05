@@ -120,7 +120,9 @@ def inverse_kinematics(q_matrix):
             error = ValueError("calculated theta_{} = {} out of range [{}, {}]: not a valid robot config"
                              .format(t.index(item)+1, item, robix['theta_{}'.format(t.index(item)+1)]['min'],
                                      robix['theta_{}'.format(t.index(item)+1)]['max']))
-            raise(error)
+            #raise(error)
+            print(error)
+            return t
 
     t_robix = t
     for i in range(len(t)):

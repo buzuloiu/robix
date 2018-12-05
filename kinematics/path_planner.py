@@ -6,9 +6,12 @@ from kinematics.forward import convert_degrees_to_robix
 from kinematics.inverse import inverse_kinematics
 
 def trpy_evolving(x, y, z, r_z, r_y, r_x):
-    return np.array([[np.cos(r_z)*np.cos(r_y), ((np.cos(r_z)*np.sin(r_y)*np.sin(r_x))-(np.sin(r_z)*np.cos(r_x))), ((np.cos(r_z)*np.sin(r_y)*np.cos(r_x))+(np.sin(r_z)*np.sin(r_x))),  t],
-                     [np.sin(r_z)*np.cos(r_y), ((np.sin(r_z)*np.sin(r_y)*np.sin(r_x))+(np.cos(r_z)*np.cos(r_x))), ((np.sin(r_z)*np.sin(r_y)*np.cos(r_x))-(np.cos(r_z)*np.sin(r_x))),  t],
-                     [   -1*np.sin(r_y),                               np.cos(r_y)*np.sin(r_x),                                 np.cos(r_y)*np.cos(r_x),                              t],
+    r_z = np.deg2rad(r_z)
+    r_y = np.deg2rad(r_y)
+    r_x = np.deg2rad(r_x)
+    return np.array([[np.cos(r_z)*np.cos(r_y), ((np.cos(r_z)*np.sin(r_y)*np.sin(r_x))-(np.sin(r_z)*np.cos(r_x))), ((np.cos(r_z)*np.sin(r_y)*np.cos(r_x))+(np.sin(r_z)*np.sin(r_x))),  x],
+                     [np.sin(r_z)*np.cos(r_y), ((np.sin(r_z)*np.sin(r_y)*np.sin(r_x))+(np.cos(r_z)*np.cos(r_x))), ((np.sin(r_z)*np.sin(r_y)*np.cos(r_x))-(np.cos(r_z)*np.sin(r_x))),  y],
+                     [   -1*np.sin(r_y),                               np.cos(r_y)*np.sin(r_x),                                 np.cos(r_y)*np.cos(r_x),                              z],
                      [         0,                                                0,                                                        0,                                         1]])
 
 def generate_robix_command(thetas):
