@@ -1,29 +1,50 @@
 from kinematics.config import robix
+from kinematics.forward import forward_kinematics, convert_robix_to_degrees, convert_degrees_to_robix
+from scipy.optimize import minimize
+from scipy.spatial.distance import euclidean
 import numpy as np
+import math
 import sys
 
 
-def asind(input):
-    print(input)
-    input = np.round(input, 5)
-    return np.degrees(np.arcsin(input))
 
+def asind(input):
+    # print(input)
+    input = np.round(input, 5)
+    return np.degrees(np.real(np.arcsin(input+0j)))
+
+
+def acosd(input):
+    # print(input)
+    input = np.round(input, 5)
+    return np.degrees(np.real(np.arccos(input+0j)))
+
+def arccos(x):
+    y = np.arccos(x + 0j)
+    return np.real(y)
+
+
+def final_angle(theta_1_2, deg_thetas, target):
+    thetas = [convert_robix_to_degrees(theta_1_2[0], name='theta_1'), convert_robix_to_degrees(theta_1_2[1], name='theta_2')] + deg_thetas
+    actual = np.matmul(forward_kinematics(thetas), np.array([[0], [0], [0], [1]]))
+    return euclidean(target, actual.reshape(4))
+
+def cosd(degrees):
+    return np.cos(np.deg2rad(degrees))
 
 def sind(degrees):
     return np.sin(np.deg2rad(degrees))
 
 
-def cosd(degrees):
-    return np.cos(np.deg2rad(degrees))
-
-
 def atan2d(x1, x2):
-    angle = np.degrees(np.arctan2(x1, x2))
+    angle = np.degrees(np.real(np.arctan2(x1, x2)))
+    return angle
+    """
     if angle > 0:
         return angle % 180
     if angle < 0:
         return angle % -1*180
-
+"""
 
 
 def inverse_kinematics(q_matrix):
@@ -62,10 +83,11 @@ def inverse_kinematics(q_matrix):
     T3 = asind((q34-d5*q33-d1)/l3)
 
     # Theta 4
-    T4 = asind(q33)-T3
+    T4 = acosd(-1*q33)-T3-90
 
     # Theta 5
     T5 = atan2d(-1*q32, q31)-10
+
 
     # Theta Unofficials
     T1 = 0
@@ -81,37 +103,25 @@ def inverse_kinematics(q_matrix):
         T2 = atan2d(q23, q13)-T1
     else:
         T2 = asind(q23*cosd(T5)/q31)-T1
+    for i in range(10):
+        """
+        iterate
+        """
+        TA = T1 + T2
+        TB = T3 + T4
 
-    """
-    iterate
-    """
-    TA = T1 + T2
-    TB = T3 + T4
+        # Theta 1
+        T1 = asind((q24-d5*sind(TA)*cosd(TB)-l3*sind(TA)*cosd(T3)+d4*cosd(TA)-l2*sind(TA))/l1)
 
-    # Theta 1
-    T1 = asind((q24-d5*sind(TA)*cosd(TB)-l3*sind(TA)*cosd(T3)+d4*cosd(TA)-l2*sind(TA))/l1)
+        # Theta 2
 
-    # Theta 2
+        if q31 == 0:
+            T2 = atan2d(q23, q13)-T1
 
-    if q31 == 0:
-        T2 = atan2d(q23, q13)-T1
+        else:
+            T2 = asind(q23*cosd(T5)/q31)-T1
 
-    else:
-        T2 = asind(q23*cosd(T5)/q31)-T1
-    """
-    iterate
-    """
-    TA = T1 + T2
-    TB = T3 + T4
 
-    # Theta 1
-    T1 = asind((q24-d5*sind(TA)*cosd(TB)-l3*sind(TA)*cosd(T3)+d4*cosd(TA)-l2*sind(TA))/l1)
-
-    # Theta 2
-    if q31 == 0:
-        T2 = atan2d(q23, q13)-T1
-    else:
-        T2 = asind(q23*cosd(T5)/q31)-T1
 
     """
     # The just incases
@@ -130,15 +140,38 @@ def inverse_kinematics(q_matrix):
     for item in t:
         _item = np.round(item, 1)
         if not (_item >= robix['theta_{}'.format(t.index(item)+1)]['min'] and _item <= robix['theta_{}'.format(t.index(item)+1)]['max']):
-            raise ValueError("calculated theta_{} = {} out of range [{}, {}]: not a valid robot config"
+            error = ValueError("calculated theta_{} = {} out of range [{}, {}]: not a valid robot config"
                              .format(t.index(item)+1, item, robix['theta_{}'.format(t.index(item)+1)]['min'],
                                      robix['theta_{}'.format(t.index(item)+1)]['max']))
+            print(error)
+            return t
+
     return t
 
 
 if __name__ == "__main__":
     np.set_printoptions(suppress=True)
-    print(np.round(inverse_kinematics(np.matrix([[0.98, -0.17,  0,   18.43],
-                                                 [-0.17, -0.98, 0,   0],
-                                                 [0,    0,   -1,    2.4],
-                                                 [0,    0,    0,    1]])), 2))
+
+    NUM_TRIALS=100
+
+    actual_thetas = []
+    predicted_thetas = []
+    theta_x_acc = []
+
+    for thetas in 60 - 120*np.random.rand(NUM_TRIALS, 5):
+        forward = forward_kinematics(thetas)
+        actual_thetas.append(thetas)
+        print(thetas)
+        #t = np.matmul(forward, np.array([[0], [0], [0], [1]]))
+        #print t
+        #actual_thetas.append(t)
+        predicted = inverse_kinematics(forward)
+        predicted_thetas.append(predicted)
+        print(predicted)
+        #predicted = forward_kinematics(predicted)
+        #a = np.matmul(predicted,  np.array([[0], [0], [0], [1]]))
+        #predicted_thetas.append(a)
+        #print a
+
+    predicted_thetas = np.array(predicted_thetas)
+    print(np.absolute(np.array(actual_thetas) -predicted_thetas).max(axis=0))
