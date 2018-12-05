@@ -6,14 +6,14 @@ def convert_degrees_to_robix(name, degrees):
     if degrees < config.robix[name]['min'] and degrees > config.robix[name]['max']:
         raise Exception('Robix motor "{}" is out of range ({}, {})'.format(name, config.robix[name]['min'], config.robix[name]['max']))
     return int(
-        (2800./(config.robix[name]['max'] - config.robix[name]['min']))*degrees*config.robix[name]['theta_sign'] + config.robix[name]['offset']
+        (2800./(config.robix[name]['max'] - config.robix[name]['min']))*degrees
     )
 
 def convert_robix_to_degrees(name, robix):
     robix = int(robix)
     if robix not in range(-1400, 1401):
         raise Exception('Robix motor "{}" is out of range (-1400, 1400)'.format(name))
-    return ((config.robix[name]['max'] - config.robix[name]['min'])*(robix*config.robix[name]['theta_sign'] - config.robix[name]['offset']))/2800.
+    return ((config.robix[name]['max'] - config.robix[name]['min'])*(robix))/2800.
 
 def compute_a_matrix(name, degrees):
     l = config.robix[name]['l']
