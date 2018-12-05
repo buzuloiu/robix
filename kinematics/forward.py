@@ -6,7 +6,7 @@ def convert_degrees_to_robix(name, degrees):
     if degrees < config.robix[name]['min'] and degrees > config.robix[name]['max']:
         raise Exception('Robix motor "{}" is out of range ({}, {})'.format(name, config.robix[name]['min'], config.robix[name]['max']))
     return int(
-        (2800./(config.robix[name]['max'] - config.robix[name]['min']))*degrees*config.robix[name]['theta_sign'] + config.robix[name]['offset']
+        (2800./(config.robix[name]['max'] - config.robix[name]['min']))*degrees
     )
 
 def convert_robix_to_degrees(name, robix):
