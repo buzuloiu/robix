@@ -1,20 +1,14 @@
 from kinematics.config import robix
 from kinematics.forward import forward_kinematics, convert_robix_to_degrees, convert_degrees_to_robix
-from scipy.optimize import minimize
 from scipy.spatial.distance import euclidean
 import numpy as np
-import math
-import sys
-
 
 
 def asind(input):
-    # print(input)
     return np.degrees(np.real(np.arcsin(input+0j)))
 
 
 def acosd(input):
-    # print(input)
     return np.degrees(np.real(np.arccos(input+0j)))
 
 
@@ -40,12 +34,6 @@ def sind(degrees):
 def atan2d(x1, x2):
     angle = np.degrees(np.real(np.arctan2(x1, x2)))
     return angle
-    """
-    if angle > 0:
-        return angle % 180
-    if angle < 0:
-        return angle % -1*180
-"""
 
 
 def inverse_kinematics(q_matrix):
@@ -96,18 +84,9 @@ def inverse_kinematics(q_matrix):
     T1 = atan2d((q24-10*q23-l3*n*cosd(T3)-l2*n),
                 (q14-10*q13-l3*m*cosd(T3)-l2*m))
 
-    #T2 = asind(n)-T1
     T2 = atan2d(q23, q13)-T1
 
 
-    """
-    # The just incases
-    # T2 = acosd(q13/cosd(TA))-T3
-    # T2 = acosd(q13*cosd(T5)/q31)-T1
-    # T2 = atan2d(q23, q13)-T1
-    # T2 = acosd((q13*cosd(atan2d(-q32, q31)))/q31)-T1
-    # T2 = asind(q23*cosd(T5)/q31)-T1
-    """
     t = [np.round(-1*np.real(T1), 1),
          np.round(-1*np.real(T2), 1),
          np.round(-1*np.real(T3), 1),
@@ -115,7 +94,7 @@ def inverse_kinematics(q_matrix):
          np.round(-1*np.real(T5), 1)]
 
     for item in t:
-        _item = np.round(item, 1)
+        _item = _item = np.round(item, 1)
         if not (_item >= robix['theta_{}'.format(t.index(item)+1)]['min'] and _item <= robix['theta_{}'.format(t.index(item)+1)]['max']):
             error = ValueError("calculated theta_{} = {} out of range [{}, {}]: not a valid robot config"
                              .format(t.index(item)+1, item, robix['theta_{}'.format(t.index(item)+1)]['min'],
@@ -137,21 +116,28 @@ if __name__ == "__main__":
     actual_thetas = []
     predicted_thetas = []
     theta_x_acc = []
+    errors = 0
 
     for thetas in 60 - 120*np.random.rand(NUM_TRIALS, 5):
-        forward = forward_kinematics(thetas)
-        actual_thetas.append(thetas)
-        print(thetas)
+
         # t = np.matmul(forward, np.array([[0], [0], [0], [1]]))
         # print t
         # actual_thetas.append(t)
-        predicted = inverse_kinematics(forward)
-        predicted_thetas.append(predicted)
-        print(predicted)
-        # predicted = forward_kinematics(predicted)
-        # a = np.matmul(predicted,  np.array([[0], [0], [0], [1]]))
-        # predicted_thetas.append(a)
-        # print a
+        print("input angles: {}".format(np.round(thetas, 2)))
+        thetas_robix = []
+        for i in range(len(thetas)):
+            thetas_robix.append(convert_degrees_to_robix('theta_{}'.format(i+1), thetas[i]))
+        print("input robix: {}".format(thetas_robix))
+        try:
+            forward = forward_kinematics(thetas)
+            predicted = inverse_kinematics(forward)
+            actual_thetas.append(thetas_robix)
+            predicted_thetas.append(predicted)
+            print("predicted inverse robix: {}".format(predicted))
+        except ValueError as e:
+            print(e)
+            errors += 1
+    print("errors: {}".format(errors))
 
     predicted_thetas = np.array(predicted_thetas)
-    print(np.absolute(np.array(actual_thetas) - predicted_thetas).max(axis= 0))
+    print(np.absolute(np.array(actual_thetas) - predicted_thetas).max(axis=0))

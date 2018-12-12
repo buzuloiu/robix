@@ -39,9 +39,11 @@ def forward_kinematics(thetas):
 
 if __name__ == '__main__':
     base = np.array([[0], [0], [0], [1]])
-    effector_base = forward_kinematics([int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]),
-                                        int(sys.argv[4]), int(sys.argv[5])])
+    effector_base = np.round(forward_kinematics([convert_robix_to_degrees('theta_1', int(sys.argv[1])),
+                                                 convert_robix_to_degrees('theta_2', int(sys.argv[2])),
+                                                 convert_robix_to_degrees('theta_3', int(sys.argv[3])),
+                                                 convert_robix_to_degrees('theta_4', int(sys.argv[4])),
+                                                 convert_robix_to_degrees('theta_5', int(sys.argv[5]))]),1)
 
-    print ('x: {}'.format(effector_base[0]))
-    print ('y: {}'.format(effector_base[1]))
-    print ('z: {}'.format(effector_base[2]))
+    print('Q_effector|base:')
+    print(effector_base)
