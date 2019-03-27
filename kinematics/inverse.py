@@ -1,6 +1,5 @@
 from kinematics.config import robix
 from kinematics.forward import forward_kinematics, convert_robix_to_degrees, convert_degrees_to_robix
-from scipy.spatial.distance import euclidean
 import numpy as np
 
 
@@ -15,12 +14,6 @@ def acosd(input):
 def arccos(x):
     y = np.arccos(x + 0j)
     return np.real(y)
-
-
-def final_angle(theta_1_2, deg_thetas, target):
-    thetas = [convert_robix_to_degrees(theta_1_2[0], name='theta_1'), convert_robix_to_degrees(theta_1_2[1], name='theta_2')] + deg_thetas
-    actual = np.matmul(forward_kinematics(thetas), np.array([[0], [0], [0], [1]]))
-    return euclidean(target, actual.reshape(4))
 
 
 def cosd(degrees):
@@ -86,7 +79,6 @@ def inverse_kinematics(q_matrix):
 
     T2 = atan2d(q23, q13)-T1
 
-
     t = [np.round(-1*np.real(T1), 1),
          np.round(-1*np.real(T2), 1),
          np.round(-1*np.real(T3), 1),
@@ -100,7 +92,6 @@ def inverse_kinematics(q_matrix):
                              .format(t.index(item)+1, item, robix['theta_{}'.format(t.index(item)+1)]['min'],
                                      robix['theta_{}'.format(t.index(item)+1)]['max']))
             raise(error)
-    
 
     t_robix = t
     for i in range(len(t)):
@@ -120,10 +111,6 @@ if __name__ == "__main__":
     errors = 0
 
     for thetas in 60 - 120*np.random.rand(NUM_TRIALS, 5):
-
-        # t = np.matmul(forward, np.array([[0], [0], [0], [1]]))
-        # print t
-        # actual_thetas.append(t)
         print("input angles: {}".format(np.round(thetas, 2)))
         thetas_robix = []
         for i in range(len(thetas)):

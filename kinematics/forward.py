@@ -2,6 +2,7 @@ from kinematics import config
 import sys
 import numpy as np
 
+
 def convert_degrees_to_robix(name, degrees):
     if degrees < config.robix[name]['min'] and degrees > config.robix[name]['max']:
         raise Exception('Robix motor "{}" is out of range ({}, {})'.format(name, config.robix[name]['min'], config.robix[name]['max']))
@@ -9,11 +10,13 @@ def convert_degrees_to_robix(name, degrees):
         (2800./(config.robix[name]['max'] - config.robix[name]['min']))*degrees
     )
 
+
 def convert_robix_to_degrees(name, robix):
     robix = int(robix)
     if robix not in range(-1400, 1401):
         raise Exception('Robix motor "{}" is out of range (-1400, 1400)'.format(name))
     return ((config.robix[name]['max'] - config.robix[name]['min'])*(robix))/2800.
+
 
 def compute_a_matrix(name, degrees):
     l = config.robix[name]['l']
@@ -24,6 +27,7 @@ def compute_a_matrix(name, degrees):
                      [np.sin(theta),    np.cos(theta)*np.cos(alpha),   (-1*np.cos(theta)*np.sin(alpha)), l*np.sin(theta)],
                      [      0,                 np.sin(alpha),                 np.cos(alpha),                   d        ],
                      [      0,                       0,                            0,                          1        ]])
+
 
 def forward_kinematics(thetas):
     effector_base = np.eye(4)
@@ -43,7 +47,7 @@ if __name__ == '__main__':
                                                  convert_robix_to_degrees('theta_2', int(sys.argv[2])),
                                                  convert_robix_to_degrees('theta_3', int(sys.argv[3])),
                                                  convert_robix_to_degrees('theta_4', int(sys.argv[4])),
-                                                 convert_robix_to_degrees('theta_5', int(sys.argv[5]))]),1)
+                                                 convert_robix_to_degrees('theta_5', int(sys.argv[5]))]), 1)
 
     print('Q_effector|base:')
     print(effector_base)
